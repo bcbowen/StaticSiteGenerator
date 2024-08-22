@@ -6,15 +6,6 @@ class HtmlNode:
         self.props = props if props is not None else {}
 
     def to_html(self): 
-        raise NotImplementedError()
-    
-    def props_to_html(self): 
-        html = ""
-        for key, value in self.props.items(): 
-            html += f" {key}='{value}'"
-        return html
-    
-    def __repr__(self) -> str:
         result =  f"<{self.tag}"
         result += self.props_to_html()
         result += ">"
@@ -25,5 +16,13 @@ class HtmlNode:
         else: 
             result += self.value
         result += f"</{self.tag}>"
-        
         return result
+    
+    def props_to_html(self): 
+        html = ""
+        for key, value in self.props.items(): 
+            html += f" {key}='{value}'"
+        return html
+    
+    def __repr__(self) -> str:
+        return self.to_html()

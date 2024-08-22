@@ -19,7 +19,14 @@ class LeafNode(HtmlNode):
             result += f"</{self.tag}>"
         
         return result
-        
+    
+    def __eq__(self, value: object) -> bool:
+        if not isinstance(value, LeafNode): 
+            return False
+        return self.value  == value.value and \
+            self.children == value.children and \
+            self.props == value.props and \
+            self.tag == value.tag
     
     def props_to_html(self): 
         html = ""

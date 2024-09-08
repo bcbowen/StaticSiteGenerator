@@ -37,3 +37,24 @@ class TextNode:
                 raise Exception(f"Invalid text type: {text_node.text_type}")
 
 
+
+    def split_nodes_delimiter(old_nodes, delimiter, text_type):
+        new_nodes = []
+        main_type = "text"
+        delimited_type = text_type
+        for old_node in old_nodes: 
+            if old_node.text_type != "text":
+                new_nodes.append(old_node)
+                continue
+            fields = old_node.text.split(delimiter)
+            isDelimited = old_node.text[0] == delimiter[0]
+            for field in fields: 
+                if field == '': 
+                    continue
+                new_nodes.append(TextNode(field, delimited_type if isDelimited else main_type))
+                isDelimited = not isDelimited
+            
+        return new_nodes
+
+            
+             

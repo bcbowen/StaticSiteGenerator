@@ -96,5 +96,7 @@ class TestTextNode(unittest.TestCase):
             TextNode.text_node_to_html_node(node)
             self.assertTrue('Invalid text type' in context.exception)  
 
+
+
 if __name__ == "__main__":
     unittest.main()

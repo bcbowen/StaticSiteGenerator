@@ -1,5 +1,5 @@
 from leafnode import LeafNode
-
+import re
 
 class TextNode: 
     def __init__(self, text, text_type, url = None): 
@@ -56,5 +56,23 @@ class TextNode:
             
         return new_nodes
 
-            
+    def extract_markdown_images(text): 
+        images = [] 
+         #  ![rick roll](https://i.imgur.com/aKaOqIh.gif)
+        pattern = r"!\[(.*?)\]\((.*?)\)"
+        matches = re.findall(pattern, text)
+        for match in matches: 
+            images.append((match[0], match[1]))
+
+        return images
+
+
+    def extract_markdown_links(text): 
+        links = []
+        #  [to boot dev](https://www.boot.dev)
+        pattern = r"(?<!!)\[(.*?)\]\((.*?)\)"
+        matches = re.findall(pattern, text)
+        for match in matches: 
+            links.append((match[0], match[1]))
+        return links
              

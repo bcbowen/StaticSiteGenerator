@@ -1,4 +1,5 @@
 from leafnode import LeafNode
+from blocktype import BlockType
 import re
 
 class TextNode: 
@@ -95,7 +96,7 @@ class TextNode:
                 new_nodes.append(TextNode(node.text[i2:], TextNode.TEXT_TYPE_TEXT))                          
         return new_nodes
 
-    def split_nodes_link(old_nodes):
+    def split_nodes_link(old_nodes : list['TextNode']) -> list['TextNode']:
         new_nodes = []
         for node in old_nodes: 
             links = TextNode.extract_markdown_links(node.text)
@@ -119,7 +120,7 @@ class TextNode:
                 new_nodes.append(TextNode(node.text[i2:], TextNode.TEXT_TYPE_TEXT))                          
         return new_nodes
 
-    def extract_markdown_images(text): 
+    def extract_markdown_images(text:str): 
         images = [] 
          #  ![rick roll](https://i.imgur.com/aKaOqIh.gif)
         pattern = r"!\[(.*?)\]\((.*?)\)"
@@ -130,7 +131,7 @@ class TextNode:
         return images
 
 
-    def extract_markdown_links(text): 
+    def extract_markdown_links(text : str) -> list[str]: 
         links = []
         #  [to boot dev](https://www.boot.dev)
         pattern = r"(?<!!)\[(.*?)\]\((.*?)\)"
@@ -171,6 +172,41 @@ class TextNode:
 
         return nodes
 
+    def markdown_to_blocks(markdown : str) -> list[str]: 
+        blocks = [] 
+        if not markdown: 
+            return blocks
+        
+        lines = markdown.split('\n')
+
+
+        currentType = TextNode.__get_block_type(lines[0])
+        previousType = currentType 
+        block = ""
+        for line in lines: 
+            currentType = TextNode.__get_block_type(line)
+            if previousType != currentType: 
+                if block != "": 
+                    blocks.append(block)
+                block = ""
+            block += line
+            previousType = currentType
+
+        if block != "": 
+            blocks.append(block)
+
+        return blocks
+
+    def __get_block_type(line: str) -> BlockType: 
+        pattern = "^\s*[#]+\s"
+        if re.match(pattern, line): 
+            return BlockType.Header
+        
+        pattern = "^\s*[\*]+\s"
+        if re.match(pattern, line):
+            return BlockType.List
+
+        return BlockType.Paragraph 
 
     def __get_next_node_type(text: str) -> str: 
         i = 0 

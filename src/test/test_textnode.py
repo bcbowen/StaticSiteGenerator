@@ -4,7 +4,6 @@ import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from blocktype import BlockType
 from textnode import TextNode
 from leafnode import LeafNode
 
@@ -138,18 +137,45 @@ class TestTextNode(unittest.TestCase):
                 result = TextNode._TextNode__get_next_node_type(text) 
                 self.assertEqual(expected, result)
 
-    def test_get_blocktype(self):
+    def test_block_to_blocktype(self):
 
         test_cases = [
-            ("This is a paragraph of text. It has some **bold** and *italic* words inside of it.", BlockType.Paragraph),
-            ("**I am bold** This is a paragraph.", BlockType.Paragraph),
-            ("# This is a heading", BlockType.Header), 
-            ("* This is another list item", BlockType.List)
+            ("This is a paragraph of text. It has some **bold** and *italic* words inside of it.", "paragraph"),
+            ("**I am bold** This is a paragraph.", "paragraph"),
+            ("# This is a heading", "heading"), 
+            (" ## This is a heading", "heading"), 
+            ("### This is a heading", "heading"), 
+            ("  #### This is a heading", "heading"), 
+            ("##### This is a heading", "heading"), 
+            ("###### This is a heading", "heading"), 
+            ("####### This is not a heading", "paragraph"),
+            ("#This is not a heading", "paragraph"),
+
+            ("```<p>Code block</p>```", "code"),
+            ("``<p>Not a code block</p>```", "paragraph"),
+            ("```<p>Not a code block</p>``", "paragraph"),
+            ("``<p>Not a code block</p>``", "paragraph"),
+            ("```<p>Not a code block</p>", "paragraph"),
+
+            ("> The dude abides", "quote"),
+
+            ("* This is an unordered list", "unordered_list"),
+            (" * This is an unordered list", "unordered_list"),
+            ("- This is an unordered list", "unordered_list"),
+            (" *This is not an unordered list", "paragraph"),
+            ("-This is not an unordered list", "paragraph"),
+
+
+            ("1. This is an ordered list", "ordered_list"),
+            (" 233. This is an ordered list", "ordered_list"),
+            ("1 This is not an ordered list", "paragraph"),
+            ("1This is not an ordered list", "paragraph"),
+            ("1.This is not an ordered list", "paragraph")
         ]
 
         for text, expected in test_cases: 
             with self.subTest(text = text, expected = expected):
-                result = TextNode._TextNode__get_block_type(text) 
+                result = TextNode.block_to_block_type(text) 
                 self.assertEqual(expected, result)
 
 if __name__ == "__main__":

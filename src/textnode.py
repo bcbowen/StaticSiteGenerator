@@ -1,5 +1,4 @@
 from leafnode import LeafNode
-from blocktype import BlockType
 import re
 
 class TextNode: 
@@ -197,16 +196,44 @@ class TextNode:
 
         return blocks
 
-    def __get_block_type(line: str) -> BlockType: 
-        pattern = "^\s*[#]+\s"
-        if re.match(pattern, line): 
-            return BlockType.Header
-        
-        pattern = "^\s*[\*]+\s"
-        if re.match(pattern, line):
-            return BlockType.List
+    def block_to_block_type(block: str) -> str: 
+        """
+        paragraph
+        heading
+        code
+        quote
+        unordered_list
+        ordered_list
 
-        return BlockType.Paragraph 
+        Headings start with 1-6 # characters, followed by a space and then the heading text.
+        Code blocks must start with 3 backticks and end with 3 backticks.
+        Every line in a quote block must start with a > character.
+        Every line in an unordered list block must start with a * or - character, followed by a space.
+        Every line in an ordered list block must start with a number followed by a . character and a space. The number must start at 1 and increment by 1 for each line.
+        If none of the above conditions are met, the block is a normal paragraph.
+
+        """
+        pattern = "^\s*[#]{1,6}\s"
+        if re.match(pattern, block): 
+            return "heading"
+        
+        pattern = "^\s*```(.*?)```$"
+        if re.match(pattern, block): 
+            return "code"
+
+        pattern = "^\s*>(.*?)$"
+        if re.match(pattern, block): 
+            return "quote"
+
+        pattern = "^\s*[-|\*]+\s"
+        if re.match(pattern, block):
+            return "unordered_list"
+        
+        pattern = "^\s*\d+\.\s(.*?)"
+        if re.match(pattern, block):
+            return "ordered_list"
+
+        return "paragraph" 
 
     def __get_next_node_type(text: str) -> str: 
         i = 0 

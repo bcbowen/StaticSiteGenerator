@@ -26,3 +26,4 @@ class HtmlNode:
     
     def __repr__(self) -> str:
         return self.to_html()
+     

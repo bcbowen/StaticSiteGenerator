@@ -1,3 +1,6 @@
+# Static generated content
+public/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -15,6 +18,7 @@ downloads/
 eggs/
 .eggs/
 lib/
+Lib/
 lib64/
 parts/
 sdist/

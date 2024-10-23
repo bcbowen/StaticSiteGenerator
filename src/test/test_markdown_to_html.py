@@ -64,7 +64,7 @@ class TestMarkdownToHtml(unittest.TestCase):
         self.assertEqual(pre.children[0].value, value) 
 
     def test_markdown_to_html_simple_quote(self):
-        block = "> First of all, you're fired!\n" \
+        block = "> First of all, you're fired!" \
         "> Yeah, I kinda figured that, Glenn"
         html = TextNode.markdown_to_html(block)
         self.assertEqual(html.tag, "div")
@@ -77,7 +77,7 @@ class TestMarkdownToHtml(unittest.TestCase):
         self.assertEqual(lines[1], "Yeah, I kinda figured that, Glenn")
     
     def test_markdown_to_html_simple_unordered_list(self):
-        block = "* dental floss\n" \
+        block = "* dental floss" \
         "* grappeling hook"
         html = TextNode.markdown_to_html(block)
         self.assertEqual(html.tag, "div")
@@ -91,7 +91,7 @@ class TestMarkdownToHtml(unittest.TestCase):
         self.assertEqual(ul.children[1].value, "grappeling hook")
 
     def test_markdown_to_html_simple_ordered_list(self):
-        block = "1. steal socks\n" \
+        block = "1. steal socks" \
         "2. profit"
         html = TextNode.markdown_to_html(block)
         self.assertEqual(html.tag, "div")
@@ -103,6 +103,40 @@ class TestMarkdownToHtml(unittest.TestCase):
         self.assertEqual(ul.children[0].value, "steal socks")
         self.assertEqual(ul.children[1].tag, "li")
         self.assertEqual(ul.children[1].value, "profit")
+
+    def test_markdown_to_html_big_shebang(self): 
+        markdown = "# Tolkien Fan Club" \
+        "" \
+        "**I like Tolkien**. Read my [first post here](/majesty) (sorry the link doesn\'t work yet)" \
+        "All that is gold does not glitter" \
+        "## Reasons I like Tolkien" \
+        "" \
+        "* You can spend years studying the legendarium and still not understand its depths" \
+        "* It can be enjoyed by children and adults alike" \
+        "* Disney *didn't ruin it*" \
+        "* It created an entirely new genre of fantasy" \
+        "## My favorite characters (in order)" \
+        "" \
+        "1. Gandalf" \
+        "2. Bilbo" \
+        "3. Sam" \
+        "4. Glorfindel" \
+        "5. Galadriel" \
+        "6. Elrond" \
+        "7. Thorin" \
+        "8. Sauron" \
+        "9. Aragorn" \
+        "Here's what `elflang` looks like (the perfect coding language):" \
+        "" \
+        "```" \
+        "func main(){" \
+        "    fmt.Println(\"Hello, World!\")" \
+        "" \
+        "```"
+        html = TextNode.markdown_to_html(markdown)
+        self.assertEqual(html.tag, "div")
+        self.assertEqual(html.children[0].tag, "h1")
+
 
 if __name__ == "__main__":
     unittest.main()

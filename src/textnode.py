@@ -1,5 +1,6 @@
 from htmlnode import HtmlNode
 from leafnode import LeafNode
+from markdown_blocks import markdown_to_blocks
 import re
 
 class TextNode: 
@@ -169,33 +170,8 @@ class TextNode:
                 nodes.append(next_nodes[-1])
                 workingText = ""
 
-        return nodes
+        return nodes    
 
-
-    def markdown_to_blocks(markdown : str) -> list[str]: 
-        blocks = [] 
-        if not markdown: 
-            return blocks
-        
-        lines = markdown.split('\n')
-
-
-        currentType = TextNode.block_to_block_type(lines[0])
-        previousType = currentType 
-        block = ""
-        for line in lines: 
-            currentType = TextNode.block_to_block_type(line)
-            if previousType != currentType: 
-                if block != "": 
-                    blocks.append(block)
-                block = ""
-            block += line
-            previousType = currentType
-
-        if block != "": 
-            blocks.append(block)
-
-        return blocks
 
     def block_to_block_type(block: str) -> str: 
         """
@@ -272,57 +248,15 @@ class TextNode:
 
                         
     def text_to_children(block : str) -> 'HtmlNode': 
-        block_type = TextNode.block_to_block_type(block)
-        node = HtmlNode()
-        """
-        paragraph
-        heading
-        code
-        quote
-        unordered_list
-        ordered_list
-        """
-        match block_type: 
-            case "paragraph": 
-                node.tag = "p"
-                node.value = block
-            case "heading": 
-                level = 0
-                i = 0
-                while block[i] == '#': 
-                    level += 1
-                    i += 1
-                node.tag = f"h{level}"
-                node.value = block[i + 1:]
-            case "code": 
-                node.tag = "pre"
-                code = HtmlNode(tag="code", value = block[3:-3])
-                node.children.append(code)
-            case "quote": 
-                node.tag = "blockquote"
-                lines = block.split('> ')
-                for line in lines: 
-                    if line != '': 
-                        node.value = line if not node.value else node.value + '\n' + line
-            case "unordered_list": 
-                node.tag = "ul"
-                lines = block.split('* ')
-                for line in lines: 
-                    if line != '': 
-                        line_item = HtmlNode(tag="li", value = line)
-                        node.children.append(line_item) 
-            case "ordered_list": 
-                node.tag = "ol"
-                pattern = '\d+\.\s+'
-                lines = re.split(pattern, block)
-                for line in lines: 
-                    if line != '': 
-                        line_item = HtmlNode(tag="li", value = line)
-                        node.children.append(line_item) 
-        return node
+        text_nodes = TextNode.text_to_textnodes(block)
+        children = []
+        for text_node in text_nodes:
+            html_node = TextNode.text_node_to_html_node(text_node)
+            children.append(html_node)
+        return children
 
     def markdown_to_html(markdown : str) -> 'HtmlNode': 
-        blocks = TextNode.markdown_to_blocks(markdown)
+        blocks = markdown_to_blocks(markdown)
         html_nodes = []
         for block in blocks: 
             html_nodes.append(TextNode.text_to_children(block))

@@ -1,7 +1,7 @@
 from htmlnode import HtmlNode
 
 class ParentNode(HtmlNode): 
-    def __init__(self, children: list['HtmlNode'] = None, tag: str = None, props: dict[str, str] = None):
+    def __init__(self, tag: str, children: list['HtmlNode'], props: dict[str, str] = None):
         super().__init__(children = children, tag = tag, props = props)
         self.tag = tag
         self.children = children

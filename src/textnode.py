@@ -1,6 +1,6 @@
 from htmlnode import HtmlNode
 from leafnode import LeafNode
-from markdown_blocks import markdown_to_blocks
+#from markdown_blocks import markdown_to_blocks
 import re
 
 class TextNode: 
@@ -173,7 +173,7 @@ class TextNode:
         return nodes    
 
 
-    def block_to_block_type(block: str) -> str: 
+    #def block_to_block_type(block: str) -> str: 
         """
         paragraph
         heading
@@ -188,6 +188,8 @@ class TextNode:
         Every line in an unordered list block must start with a * or - character, followed by a space.
         Every line in an ordered list block must start with a number followed by a . character and a space. The number must start at 1 and increment by 1 for each line.
         If none of the above conditions are met, the block is a normal paragraph.
+
+        """
 
         """
         pattern = "^\s*[#]{1,6}\s"
@@ -211,6 +213,7 @@ class TextNode:
             return "ordered_list"
 
         return "paragraph" 
+    """
 
     def __get_next_node_type(text: str) -> str: 
         i = 0 
@@ -255,6 +258,7 @@ class TextNode:
             children.append(html_node)
         return children
 
+    """
     def markdown_to_html(markdown : str) -> 'HtmlNode': 
         blocks = markdown_to_blocks(markdown)
         html_nodes = []
@@ -263,5 +267,5 @@ class TextNode:
         
         wrapper = HtmlNode(tag="div", children=html_nodes)
         return wrapper                    
-
+    """
 

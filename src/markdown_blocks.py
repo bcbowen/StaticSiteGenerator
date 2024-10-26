@@ -10,7 +10,7 @@ block_type_olist = "ordered_list"
 block_type_ulist = "unordered_list"
 
 def markdown_to_blocks(markdown: str) -> list[str]:
-    blocks = markdown.split("\n\n")
+    blocks = markdown.split("\n")
     filtered_blocks = []
     for block in blocks:
         if block == "":

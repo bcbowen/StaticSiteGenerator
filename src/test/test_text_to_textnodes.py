@@ -5,6 +5,7 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from textnode import TextNode
+from text_type import TextType
 
 class TestSplitNodesLink(unittest.TestCase):
 
@@ -12,16 +13,16 @@ class TestSplitNodesLink(unittest.TestCase):
         text = "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
         new_nodes = TextNode.text_to_textnodes(text)
         expected =  [
-            TextNode("This is ", TextNode.TEXT_TYPE_TEXT),
-            TextNode("text", TextNode.TEXT_TYPE_BOLD),
-            TextNode(" with an ", TextNode.TEXT_TYPE_TEXT),
-            TextNode("italic", TextNode.TEXT_TYPE_ITALIC),
-            TextNode(" word and a ", TextNode.TEXT_TYPE_TEXT),
-            TextNode("code block", TextNode.TEXT_TYPE_CODE),
-            TextNode(" and an ", TextNode.TEXT_TYPE_TEXT),
-            TextNode("obi wan image", TextNode.TEXT_TYPE_IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
-            TextNode(" and a ", TextNode.TEXT_TYPE_TEXT),
-            TextNode("link", TextNode.TEXT_TYPE_LINK, "https://boot.dev")
+            TextNode("This is ", TextType.TEXT),
+            TextNode("text", TextType.BOLD),
+            TextNode(" with an ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" word and a ", TextType.TEXT),
+            TextNode("code block", TextType.CODE),
+            TextNode(" and an ", TextType.TEXT),
+            TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "https://boot.dev")
         ]
         self.assertEqual(expected, new_nodes)
 

@@ -5,67 +5,68 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from textnode import TextNode
+from text_type import TextType
 from leafnode import LeafNode
 
 
 class TestTextNode(unittest.TestCase):
     def test_eq2(self):
-        node = TextNode("This is a text node", TextNode.TEXT_TYPE_BOLD)
-        node2 = TextNode("This is a text node", TextNode.TEXT_TYPE_BOLD)
+        node = TextNode("This is a text node", TextType.BOLD)
+        node2 = TextNode("This is a text node", TextType.BOLD)
         self.assertEqual(node, node2)
 
     def test_eq3(self):
-        node = TextNode("This is a text node", TextNode.TEXT_TYPE_BOLD, "www.aol.com")
-        node2 = TextNode("This is a text node", TextNode.TEXT_TYPE_BOLD, "www.aol.com")
+        node = TextNode("This is a text node", TextType.BOLD, "www.aol.com")
+        node2 = TextNode("This is a text node", TextType.BOLD, "www.aol.com")
         self.assertEqual(node, node2)
     
 
     def test_neq_2_1(self):
-        node = TextNode("This is a text node", TextNode.TEXT_TYPE_BOLD)
-        node2 = TextNode("This is a different text node", TextNode.TEXT_TYPE_BOLD)
+        node = TextNode("This is a text node", TextType.BOLD)
+        node2 = TextNode("This is a different text node", TextType.BOLD)
         self.assertNotEqual(node, node2)
     
     def test_neq2_2(self):
-        node = TextNode("This is a text node", TextNode.TEXT_TYPE_BOLD)
-        node2 = TextNode("This is a text node", TextNode.TEXT_TYPE_ITALIC)
+        node = TextNode("This is a text node", TextType.BOLD)
+        node2 = TextNode("This is a text node", TextType.ITALIC)
         self.assertNotEqual(node, node2)
     
     def test_neq3(self):
-        node = TextNode("This is a text node", TextNode.TEXT_TYPE_BOLD, "www.aol.com")
-        node2 = TextNode("This is a text node", TextNode.TEXT_TYPE_BOLD, None)
+        node = TextNode("This is a text node", TextType.BOLD, "www.aol.com")
+        node2 = TextNode("This is a text node", TextType.BOLD, None)
         self.assertNotEqual(node, node2)
 
     def test_node_to_html_text(self): 
         text = "This is text"
-        node = TextNode(text, text_type=TextNode.TEXT_TYPE_TEXT)
+        node = TextNode(text, text_type=TextType.TEXT)
         expected = LeafNode(value=text)
         result = TextNode.text_node_to_html_node(node)
         self.assertEqual(expected, result)
 
     def test_node_to_html_bold(self): 
         text = "I'm feeling quite bold!"
-        node = TextNode(text = text, text_type=TextNode.TEXT_TYPE_BOLD)
+        node = TextNode(text = text, text_type=TextType.BOLD)
         expected = LeafNode(value=text, tag = "b")
         result = TextNode.text_node_to_html_node(node)
         self.assertEqual(expected, result)
 
     def test_node_to_html_italic(self): 
         text = "Italics buddy"
-        node = TextNode(text = text, text_type=TextNode.TEXT_TYPE_ITALIC)
+        node = TextNode(text = text, text_type=TextType.ITALIC)
         expected = LeafNode(value=text, tag = "i")
         result = TextNode.text_node_to_html_node(node)
         self.assertEqual(expected, result)      
 
     def test_node_to_html_code(self): 
         text = "10 goto 10"
-        node = TextNode(text = text, text_type=TextNode.TEXT_TYPE_CODE)
-        expected = LeafNode(value=text, tag = TextNode.TEXT_TYPE_CODE)
+        node = TextNode(text = text, text_type=TextType.CODE)
+        expected = LeafNode(value=text, tag = TextType.CODE)
         result = TextNode.text_node_to_html_node(node)
         self.assertEqual(expected, result)      
 
     def test_node_to_html_link(self): 
         text = "You got mail, dude"
-        node = TextNode(text = text, text_type=TextNode.TEXT_TYPE_LINK, url = "aol.com")
+        node = TextNode(text = text, text_type=TextType.LINK, url = "aol.com")
         expectedProps = {"href": "aol.com"}
         expected = LeafNode(value=text, tag = "a", props = expectedProps)
         result = TextNode.text_node_to_html_node(node)
@@ -73,7 +74,7 @@ class TestTextNode(unittest.TestCase):
 
     def test_node_to_html_img(self): 
         text = "breathtaking"
-        node = TextNode(text = text, text_type=TextNode.TEXT_TYPE_IMAGE, url = "aol.com")
+        node = TextNode(text = text, text_type=TextType.IMAGE, url = "aol.com")
         expectedProps = {"src": "aol.com", "alt": text}
         expected = LeafNode(value='', tag = "img", props = expectedProps)
         result = TextNode.text_node_to_html_node(node)
@@ -120,21 +121,6 @@ class TestTextNode(unittest.TestCase):
         for text, url, expected in test_cases: 
             with self.subTest(text = text, url = url, expected = expected):
                 result = TextNode.get_image_text(text, url) 
-                self.assertEqual(expected, result)
-
-    def test_get_next_nodetype(self):
-        test_cases = [
-            ("This is **text** ", TextNode.TEXT_TYPE_BOLD), 
-            ("This is an *italic* word ", TextNode.TEXT_TYPE_ITALIC),
-            ("This is a `code block` ", TextNode.TEXT_TYPE_CODE),
-            ("This is an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg)", TextNode.TEXT_TYPE_IMAGE),
-            ("This is a [link](https://boot.dev)", TextNode.TEXT_TYPE_LINK), 
-            ("This is just text", TextNode.TEXT_TYPE_TEXT)
-        ]
-
-        for text, expected in test_cases: 
-            with self.subTest(text = text, expected = expected):
-                result = TextNode._TextNode__get_next_node_type(text) 
                 self.assertEqual(expected, result)
 
     def test_block_to_blocktype(self):

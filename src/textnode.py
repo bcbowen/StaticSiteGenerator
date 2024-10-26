@@ -5,20 +5,20 @@ import re
 
 class TextNode: 
 
-    def __init__(self, text, text_type, url = None): 
+    def __init__(self, text : str, text_type : TextType, url = None): 
         self.text = text
         self.text_type = text_type
         self.url = url
 
-    def __eq__(node1, node2): 
+    def __eq__(node1 : TextType, node2 : TextType) -> bool: 
         return node1.text == node2.text \
           and node1.text_type == node2.text_type \
           and node1.url == node2.url
 
     def __repr__(self):
-        return F"TextNode({self.text}, {self.text_type}, {self.url})" 
+        return F"TextNode({self.text}, {self.text_type.value}, {self.url})" 
     
-    def text_node_to_html_node(text_node): 
+    def text_node_to_html_node(text_node : 'TextNode') -> HtmlNode: 
         if not text_node or not text_node.text_type: 
             raise Exception("invalid text node")
         match text_node.text_type: 
@@ -71,53 +71,42 @@ class TextNode:
             if i2 < len(node.text) - 1: 
                 new_nodes.append(TextNode(node.text[i2:], TextType.TEXT))                          
         return new_nodes
-
-    def split_nodes_link(old_nodes : list['TextNode']) -> list['TextNode']:
+    
+    def extract_markdown_links(text : str) -> list[str]:
+        pattern = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"
+        matches = re.findall(pattern, text)
+        return matches
+    
+    def split_nodes_link(old_nodes: list['TextNode']) -> list['TextNode']:
         new_nodes = []
-        for node in old_nodes: 
-            links = TextNode.extract_markdown_links(node.text)
-            if links == []: 
-                new_nodes.append(node)
+        for old_node in old_nodes:
+            if old_node.text_type != TextType.TEXT:
+                new_nodes.append(old_node)
                 continue
-            i1 = 0
-            i2 = 0
-            for link in links: 
-                linkText = TextNode.get_link_text(*link)
-                i2 = node.text.index(linkText, i1)
-                if i2 == -1: 
-                    raise Exception(f"image not found but it should be, man. Image: {linkText}. NodeText: {node.text}")
-                if i2 > i1: 
-                    new_nodes.append(TextNode(node.text[i1:i2], TextType.TEXT))
-                    i1 = i2
-                i2 += len(linkText)
-                new_nodes.append(TextNode(link[0], TextType.TEXT, link[1]))
-                i1 = i2  
-            if i2 < len(node.text) - 1: 
-                new_nodes.append(TextNode(node.text[i2:], TextType.TEXT))                          
+            original_text = old_node.text
+            links = TextNode.extract_markdown_links(original_text)
+            if len(links) == 0:
+                new_nodes.append(old_node)
+                continue
+            for link in links:
+                sections = original_text.split(f"[{link[0]}]({link[1]})", 1)
+                if len(sections) != 2:
+                    raise ValueError("Invalid markdown, link section not closed")
+                if sections[0] != "":
+                    new_nodes.append(TextNode(sections[0], TextType.TEXT))
+                new_nodes.append(TextNode(link[0], TextType.LINK, link[1]))
+                original_text = sections[1]
+            if original_text != "":
+                new_nodes.append(TextNode(original_text, TextType.TEXT))
         return new_nodes
 
-    def extract_markdown_images(text:str): 
-        images = [] 
-         #  ![rick roll](https://i.imgur.com/aKaOqIh.gif)
-        pattern = r"!\[(.*?)\]\((.*?)\)"
+    def extract_markdown_images(text : str) -> list[str]:
+        pattern = r"!\[([^\[\]]*)\]\(([^\(\)]*)\)"
         matches = re.findall(pattern, text)
-        for match in matches: 
-            images.append((match[0], match[1]))
-
-        return images
-
-
-    def extract_markdown_links(text : str) -> list[str]: 
-        links = []
-        #  [to boot dev](https://www.boot.dev)
-        pattern = r"(?<!!)\[(.*?)\]\((.*?)\)"
-        matches = re.findall(pattern, text)
-        for match in matches: 
-            links.append((match[0], match[1]))
-        return links
+        return matches
     
     
-    def split_nodes_delimiter(old_nodes, delimiter, text_type):
+    def split_nodes_delimiter(old_nodes : list['TextNode'], delimiter : str, text_type: TextType) -> list['TextNode']:
         new_nodes = []
         for old_node in old_nodes:
             if old_node.text_type != TextType.TEXT:

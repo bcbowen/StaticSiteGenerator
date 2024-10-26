@@ -11,23 +11,23 @@ from leafnode import LeafNode
 
 class TestTextNode(unittest.TestCase):
     def test_eq2(self):
-        node = TextNode("This is a text node", TextType.BOLD)
-        node2 = TextNode("This is a text node", TextType.BOLD)
+        node = TextNode("This is a text node", TextType.BOLD.value)
+        node2 = TextNode("This is a text node", TextType.BOLD.value)
         self.assertEqual(node, node2)
 
     def test_eq3(self):
-        node = TextNode("This is a text node", TextType.BOLD, "www.aol.com")
-        node2 = TextNode("This is a text node", TextType.BOLD, "www.aol.com")
+        node = TextNode("This is a text node", TextType.BOLD.value, "www.aol.com")
+        node2 = TextNode("This is a text node", TextType.BOLD.value, "www.aol.com")
         self.assertEqual(node, node2)
     
 
     def test_neq_2_1(self):
-        node = TextNode("This is a text node", TextType.BOLD)
-        node2 = TextNode("This is a different text node", TextType.BOLD)
+        node = TextNode("This is a text node", TextType.BOLD.value)
+        node2 = TextNode("This is a different text node", TextType.BOLD.value)
         self.assertNotEqual(node, node2)
     
     def test_neq2_2(self):
-        node = TextNode("This is a text node", TextType.BOLD)
+        node = TextNode("This is a text node", TextType.BOLD.value)
         node2 = TextNode("This is a text node", TextType.ITALIC)
         self.assertNotEqual(node, node2)
     
@@ -39,7 +39,7 @@ class TestTextNode(unittest.TestCase):
     def test_node_to_html_text(self): 
         text = "This is text"
         node = TextNode(text, text_type=TextType.TEXT)
-        expected = LeafNode(value=text)
+        expected = LeafNode(text)
         result = TextNode.text_node_to_html_node(node)
         self.assertEqual(expected, result)
 
@@ -53,14 +53,14 @@ class TestTextNode(unittest.TestCase):
     def test_node_to_html_italic(self): 
         text = "Italics buddy"
         node = TextNode(text = text, text_type=TextType.ITALIC)
-        expected = LeafNode(value=text, tag = "i")
+        expected = LeafNode(value=text, tag ="i")
         result = TextNode.text_node_to_html_node(node)
         self.assertEqual(expected, result)      
 
     def test_node_to_html_code(self): 
         text = "10 goto 10"
         node = TextNode(text = text, text_type=TextType.CODE)
-        expected = LeafNode(value=text, tag = TextType.CODE)
+        expected = LeafNode(value=text, tag = TextType.CODE.value)
         result = TextNode.text_node_to_html_node(node)
         self.assertEqual(expected, result)      
 
@@ -123,46 +123,7 @@ class TestTextNode(unittest.TestCase):
                 result = TextNode.get_image_text(text, url) 
                 self.assertEqual(expected, result)
 
-    def test_block_to_blocktype(self):
-
-        test_cases = [
-            ("This is a paragraph of text. It has some **bold** and *italic* words inside of it.", "paragraph"),
-            ("**I am bold** This is a paragraph.", "paragraph"),
-            ("# This is a heading", "heading"), 
-            (" ## This is a heading", "heading"), 
-            ("### This is a heading", "heading"), 
-            ("  #### This is a heading", "heading"), 
-            ("##### This is a heading", "heading"), 
-            ("###### This is a heading", "heading"), 
-            ("####### This is not a heading", "paragraph"),
-            ("#This is not a heading", "paragraph"),
-
-            ("```<p>Code block</p>```", "code"),
-            ("``<p>Not a code block</p>```", "paragraph"),
-            ("```<p>Not a code block</p>``", "paragraph"),
-            ("``<p>Not a code block</p>``", "paragraph"),
-            ("```<p>Not a code block</p>", "paragraph"),
-
-            ("> The dude abides", "quote"),
-
-            ("* This is an unordered list", "unordered_list"),
-            (" * This is an unordered list", "unordered_list"),
-            ("- This is an unordered list", "unordered_list"),
-            (" *This is not an unordered list", "paragraph"),
-            ("-This is not an unordered list", "paragraph"),
-
-
-            ("1. This is an ordered list", "ordered_list"),
-            (" 233. This is an ordered list", "ordered_list"),
-            ("1 This is not an ordered list", "paragraph"),
-            ("1This is not an ordered list", "paragraph"),
-            ("1.This is not an ordered list", "paragraph")
-        ]
-
-        for text, expected in test_cases: 
-            with self.subTest(text = text, expected = expected):
-                result = TextNode.block_to_block_type(text) 
-                self.assertEqual(expected, result)
+    
 
 if __name__ == "__main__":
     unittest.main()

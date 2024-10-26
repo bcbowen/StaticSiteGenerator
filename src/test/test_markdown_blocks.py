@@ -169,6 +169,47 @@ this is paragraph text
             "<div><pre><code>This is a code block\n</code></pre><p>this is paragraph text</p></div>",
         )
 
+def test_block_to_blocktype(self):
+
+        test_cases = [
+            ("This is a paragraph of text. It has some **bold** and *italic* words inside of it.", "paragraph"),
+            ("**I am bold** This is a paragraph.", "paragraph"),
+            ("# This is a heading", "heading"), 
+            (" ## This is a heading", "heading"), 
+            ("### This is a heading", "heading"), 
+            ("  #### This is a heading", "heading"), 
+            ("##### This is a heading", "heading"), 
+            ("###### This is a heading", "heading"), 
+            ("####### This is not a heading", "paragraph"),
+            ("#This is not a heading", "paragraph"),
+
+            ("```<p>Code block</p>```", "code"),
+            ("``<p>Not a code block</p>```", "paragraph"),
+            ("```<p>Not a code block</p>``", "paragraph"),
+            ("``<p>Not a code block</p>``", "paragraph"),
+            ("```<p>Not a code block</p>", "paragraph"),
+
+            ("> The dude abides", "quote"),
+
+            ("* This is an unordered list", "unordered_list"),
+            (" * This is an unordered list", "unordered_list"),
+            ("- This is an unordered list", "unordered_list"),
+            (" *This is not an unordered list", "paragraph"),
+            ("-This is not an unordered list", "paragraph"),
+
+
+            ("1. This is an ordered list", "ordered_list"),
+            (" 233. This is an ordered list", "ordered_list"),
+            ("1 This is not an ordered list", "paragraph"),
+            ("1This is not an ordered list", "paragraph"),
+            ("1.This is not an ordered list", "paragraph")
+        ]
+
+        for text, expected in test_cases: 
+            with self.subTest(text = text, expected = expected):
+                result = block_to_block_type(text) 
+                self.assertEqual(expected, result)
+
 
 if __name__ == "__main__":
     unittest.main()

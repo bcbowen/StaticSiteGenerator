@@ -87,12 +87,12 @@ class TestMarkdownToHtmlNode(unittest.TestCase):
         ul = html.children[0]
         self.assertEqual(len(ul.children), 2)
         self.assertEqual(ul.children[0].tag, "li")
-        self.assertEqual(ul.children[0].value, "dental floss")
+        self.assertEqual(ul.children[0].children[0].value, "dental floss")
         self.assertEqual(ul.children[1].tag, "li")
-        self.assertEqual(ul.children[1].value, "grappeling hook")
+        self.assertEqual(ul.children[1].children[0].value, "grappeling hook")
 
     def test_markdown_to_html_simple_ordered_list(self):
-        block = """1. steal socks 
+        block = """1. steal socks
 2. profit"""
         html = markdown_to_html_node(block)
         self.assertEqual(html.tag, "div")
@@ -101,9 +101,9 @@ class TestMarkdownToHtmlNode(unittest.TestCase):
         ul = html.children[0]
         self.assertEqual(len(ul.children), 2)
         self.assertEqual(ul.children[0].tag, "li")
-        self.assertEqual(ul.children[0].value, "steal socks")
+        self.assertEqual(ul.children[0].children[0].value, "steal socks")
         self.assertEqual(ul.children[1].tag, "li")
-        self.assertEqual(ul.children[1].value, "profit")
+        self.assertEqual(ul.children[1].children[0].value, "profit")
 
     def test_markdown_to_html_big_shebang(self): 
         markdown = """# Tolkien Fan Club

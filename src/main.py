@@ -2,6 +2,7 @@ import os
 import re
 import shutil
 from pathlib import Path
+from markdown_blocks import markdown_to_html_node
 from textnode import TextNode
 from htmlnode import HtmlNode
 
@@ -53,7 +54,7 @@ def generate_page(from_path, template_path, dest_path):
         template_text = template.read()
         template.close()
 
-    html = TextNode.markdown_to_html(file_text)
+    html = markdown_to_html_node(file_text)
     html_text = HtmlNode.to_html(html)
     
     title = extract_title(file_text)

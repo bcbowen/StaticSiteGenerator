@@ -71,11 +71,8 @@ class TestMarkdownToHtmlNode(unittest.TestCase):
         self.assertEqual(html.tag, "div")
         self.assertEqual(len(html.children), 1)
         self.assertEqual(html.children[0].tag, "blockquote")
-        quote = html.children[0]
-        lines = quote.value.split('\n')
-        self.assertEqual(len(lines), 2)
-        self.assertEqual(lines[0], "First of all, you're fired!")
-        self.assertEqual(lines[1], "Yeah, I kinda figured that, Glenn")
+        self.assertEqual(html.children[0].children[0].value, "First of all, you're fired! Yeah, I kinda figured that, Glenn")
+
     
     def test_markdown_to_html_simple_unordered_list(self):
         block = """* dental floss

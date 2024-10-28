@@ -5,7 +5,7 @@ class ParentNode(HtmlNode):
         super().__init__(children = children, tag = tag, props = props)
         self.tag = tag
         self.children = children
-        self.props = props if props is not None else {}
+        self.props = props
 
     def to_html(self): 
         result = ""
@@ -15,7 +15,8 @@ class ParentNode(HtmlNode):
             raise ValueError('Parent node needs children')
         
         result = f"<{self.tag}"
-        result += self.props_to_html()
+        if self.props: 
+            result += self.props_to_html()
         result += ">"
         for child in self.children: 
             result += child.to_html()
@@ -26,8 +27,9 @@ class ParentNode(HtmlNode):
     
     def props_to_html(self): 
         html = ""
-        for key, value in self.props.items(): 
-            html += f" {key}='{value}'"
+        if self.props: 
+            for key, value in self.props.items(): 
+                html += f" {key}='{value}'"
         return html
     
     def __repr__(self) -> str:

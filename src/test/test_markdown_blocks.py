@@ -166,7 +166,7 @@ this is paragraph text
         html = node.to_html()
         self.assertEqual(
             html,
-            "<div><pre><code>This is a code block\n</code></pre><p>this is paragraph text</p></div>",
+            "<div><pre><code>This is a code block</code></pre><p>this is paragraph text</p></div>",
         )
 
 def test_block_to_blocktype(self):

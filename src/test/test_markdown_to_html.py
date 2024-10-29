@@ -130,6 +130,19 @@ Here's what `elflang` looks like (the perfect coding language):
         fmt.Println(\"Hello, World!\")
     }
 ```"""
+        """
+        1. Expecting status code: 200
+        2. Expecting status code: 200
+        3. Expecting body to contain: html
+        4. Expecting body to contain: <h1>Tolkien Fan Club</h1>
+        5. Expecting body to contain: <li>Gandalf</li>
+        6. Expecting body to contain: <i>didn't ruin it</i>
+        7. Expecting body to contain: <b>I like Tolkien</b>
+        8. Expecting body to contain: <a href
+        9. Expecting body to contain: <li>It can be enjoyed by children and adults alike</li>
+        10. Expecting body to contain: <code>
+        11. Expecting body to contain: <blockquote>All that is gold does not glitter</blockquote>"""
+
         html = markdown_to_html_node(markdown)
         self.assertEqual(html.tag, "div")
         self.assertEqual(html.children[0].tag, "h1")
